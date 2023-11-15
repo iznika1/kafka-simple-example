@@ -1,0 +1,51 @@
+# See dockerhub for different versions of kafka and zookeeper
+# https://hub.docker.com/r/wurstmeister/kafka/
+# https://hub.docker.com/r/wurstmeister/zookeeper/
+version: '3.5'
+
+services:
+  local-zookeeper:
+    image: confluentinc/cp-zookeeper:7.1.1
+    hostname: local-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_PORT}
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - "${ZOOKEEPER_PORT}:${ZOOKEEPER_PORT}"
+  local-kafka:
+    image: confluentinc/cp-kafka:7.1.1
+    hostname: local-kafka
+    environment:
+      KAFKA_INTERNAL_PORT: 9093
+      KAFKA_ZOOKEEPER_CONNECT: local-zookeeper:${ZOOKEEPER_PORT}
+      KAFKA_LISTENERS: PLAINTEXT://:9093,EXTERNAL://:${KAFKA_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://local-kafka:9093,EXTERNAL://localhost:${KAFKA_PORT}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_FILE_DELETE_DELAY_MS: 1
+      KAFKA_BROKER_ID: 2
+    links:
+      - local-zookeeper
+    ports:
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
+  local-schema-registry:
+    image: confluentinc/cp-schema-registry:7.1.1
+    hostname: local-schema-registry
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://local-kafka:9093
+      SCHEMA_REGISTRY_HOST_NAME: local-schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://local-schema-registry:${SCHEMA_REGISTRY_PORT}
+      SCHEMA_REGISTRY_DEBUG: 'true'
+    links:
+      - local-kafka
+    ports:
+      - "${SCHEMA_REGISTRY_PORT}:${SCHEMA_REGISTRY_PORT}"
+networks:
+  default:
+    name: local-default

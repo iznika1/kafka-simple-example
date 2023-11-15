@@ -1,0 +1,10 @@
+{
+  "namespace": "hr.rba.avro",
+  "name": "NumberEntity",
+  "type": "record",
+  "fields": [
+    {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "UTC instant of this entity. This is UTC time when entity status occured on the service"},
+    {"name": "trackingId", "type": {"type":"string","avro.java.string":"String"}},
+    {"name": "number", "type": "long"}
+  ]
+}

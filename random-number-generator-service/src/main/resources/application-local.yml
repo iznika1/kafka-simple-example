@@ -1,0 +1,8 @@
+random-number-generator:
+  default:
+    environment-name: local.dev
+    kafka:
+      bootstrap-servers:
+        - localhost:9122
+      schema-registry:
+        url: http://localhost:7803/

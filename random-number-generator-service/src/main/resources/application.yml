@@ -1,0 +1,48 @@
+server:
+  port: 8081
+
+random-number-generator:
+  default:
+    environment-name: local.dev
+    kafka:
+      bootstrap-servers:
+        - <change-bootstrap-server-hostname>:<change-bootstrap-server-port>
+      schema-registry:
+        url: -<change-schema-registry-url>
+      topic-prefix: ${random-number-generator.default.environment-name}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      partition-count: 1
+      replication-factor: 1
+      min-insync-replicas: 1
+      acks: all
+      retention: 118719488000 # 3 years in ms
+  range:
+    from: 0
+    to: 1000
+  period: 2s
+  persistence-datasource:
+    type: KAFKA
+    kafka:
+      enabled: true
+      bootstrap-servers:
+        - ${random-number-generator.default.kafka.bootstrap-servers[0]}
+      schema-registry: ${random-number-generator.default.kafka.schema-registry.url}
+    kafka-topic:
+      name: ${random-number-generator.default.kafka.topic-prefix}.number-entity.0
+      topic-prefix: ${random-number-generator.default.kafka.topic-prefix}
+      key-serializer: ${random-number-generator.default.kafka.key-serializer}
+      value-serializer: ${random-number-generator.default.kafka.value-serializer}
+      key-deserializer: ${random-number-generator.default.kafka.key-deserializer}
+      value-deserializer: ${random-number-generator.default.kafka.value-deserializer}
+      partition-count: ${random-number-generator.default.kafka.partition-count}
+      replication-factor: ${random-number-generator.default.kafka.replication-factor}
+      min-insync-replicas: ${random-number-generator.default.kafka.min-insync-replicas}
+      acks: ${random-number-generator.default.kafka.acks}
+      retention: ${random-number-generator.default.kafka.retention}
+      create-topic-if-missing:
+        create-with-num-of-partitions: ${random-number-generator.default.kafka.partition-count}
+        replication-factor: ${random-number-generator.default.kafka.replication-factor}
+        min-insync-replicas: ${random-number-generator.default.kafka.min-insync-replicas}

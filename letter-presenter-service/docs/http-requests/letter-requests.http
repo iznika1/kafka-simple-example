@@ -1,0 +1,12 @@
+GET http://localhost:8082/api/v1/letter/R/count
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/v1/letter/B/count
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/v1/letter/RBA/count
+Content-Type: application/json

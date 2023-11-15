@@ -1,0 +1,21 @@
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/local-letter-db
+    username: local
+    password: local
+
+logging:
+  level:
+    org:
+      springframework: INFO
+
+letter-presenter:
+  default:
+    environment-name: local.dev
+    kafka:
+      bootstrap-servers:
+        - localhost:9122
+      schema-registry:
+        url: http://localhost:7803/

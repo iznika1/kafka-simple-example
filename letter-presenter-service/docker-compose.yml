@@ -1,0 +1,17 @@
+# See dockerhub for different versions of kafka and zookeeper
+# https://hub.docker.com/r/wurstmeister/kafka/
+# https://hub.docker.com/r/wurstmeister/zookeeper/
+version: '3.5'
+
+services:
+  local-postgres:
+    image: postgres
+    ports:
+      - "${POSTGRESQL_PORT}:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_DB: ${POSTGRESQL_DB}
+networks:
+  default:
+    name: local-default

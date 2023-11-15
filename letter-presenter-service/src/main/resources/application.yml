@@ -1,0 +1,46 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://<change-datasource-hostname>:<change-datasource-port/<change-datasource-database-name>
+    username: <change-datasource-username>
+    password: <change-datasource-password>
+
+letter-presenter:
+  default:
+    application-name: letter-presenter
+    environment-name: local.dev
+    kafka:
+      bootstrap-servers:
+        - <change-bootstrap-server-hostname>:<change-bootstrap-server-port>
+      schema-registry:
+        url: -<change-schema-registry-url>
+      topic-prefix: ${letter-presenter.default.environment-name}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      partition-count: 1
+      replication-factor: 1
+      min-insync-replicas: 1
+      acks: all
+      retention: 118719488000 # 3 years in ms
+  kafka-feed-number-datasource:
+    kafka:
+      bootstrap-servers:
+        - ${letter-presenter.default.kafka.bootstrap-servers[0]}
+      schema-registry: ${letter-presenter.default.kafka.schema-registry.url}
+    kafka-topic:
+      name: ${letter-presenter.default.kafka.topic-prefix}.number-entity.0
+      consumer-group-id: ${letter-presenter.default.kafka.topic-prefix}-${letter-presenter.default.application-name}-consumer
+      topic-prefix: ${letter-presenter.default.kafka.topic-prefix}
+      key-serializer: ${letter-presenter.default.kafka.key-serializer}
+      value-serializer: ${letter-presenter.default.kafka.value-serializer}
+      key-deserializer: ${letter-presenter.default.kafka.key-deserializer}
+      value-deserializer: ${letter-presenter.default.kafka.value-deserializer}
+      partition-count: ${letter-presenter.default.kafka.partition-count}
+      replication-factor: ${letter-presenter.default.kafka.replication-factor}
+      min-insync-replicas: ${letter-presenter.default.kafka.min-insync-replicas}
+      acks: ${letter-presenter.default.kafka.acks}
+      retention: ${letter-presenter.default.kafka.retention}
